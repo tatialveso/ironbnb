@@ -1,13 +1,19 @@
+import { useState } from "react";
 import { Button, Form, Modal } from "react-bootstrap";
 
 function AddApartment() {
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+  
     return (
         <div className="my-3">
-            <Button variant="info">
+            <Button variant="info" onClick={handleShow}>
                 Cadastrar apartamento
             </Button>
 
-            <Modal>
+            <Modal show={show} onHide={handleClose}>
                 <Modal.Header closeButton>
                     <Modal.Title>Cadastrar apartamento</Modal.Title>
                 </Modal.Header>

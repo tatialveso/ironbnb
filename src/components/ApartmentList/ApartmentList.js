@@ -1,9 +1,13 @@
 import axios from "axios";
-import { Container, Row } from "react-bootstrap";
+import { useEffect, useState } from "react";
+import { Col, Container, Row, Spinner } from "react-bootstrap";
 import AddApartment from "../AddApartment/AddApartment";
 
 
 function ApartmentList() {
+    const [apartments, setApartments] = useState([])
+    const [fetching, setFetching] = useState(true)
+
     // captura a API (as informações de dados)
     // fetch("https://ironbnb-m3.herokuapp.com/apartments")
     //     // se deu certo então transforme esses dados em .json()
@@ -16,11 +20,29 @@ function ApartmentList() {
     //     })
     //     .catch((error) => console.log(error))
 
-    axios.get("https://ironbnb-m3.herokuapp.com/apartments")
+    // callback -> o código que a gente vai rodar
+    // array de valores que o código vai depender para rodar
+        // se o array estiver vazio, o useEffect roda quando a aplicação iniciada
+    useEffect(() => {
+        axios.get("https://ironbnb-m3.herokuapp.com/apartments")
         .then((response) => {
-            console.log("Resposta: ", response.data)
+            setApartments(response.data)
+            setFetching(false)
         })
         .catch((error) => console.log(error))
+    }, [])
+
+    const renderApartments = apartments.map((apto) => {
+        return (
+            <Col key={apto._id}>
+                <div className="card">
+                    <img src={apto.img} />
+                    <h3>{apto.title}</h3>
+                    <p>Price: {apto.pricePerDay}</p>
+                </div>
+            </Col>
+        )
+    })
 
     return (
         <div>
@@ -29,6 +51,8 @@ function ApartmentList() {
                     <AddApartment />
                 </Row>
                 <Row>
+                    { fetching && <Spinner animation="border" /> }
+                    { renderApartments }
                 </Row>
             </Container>
         </div>
